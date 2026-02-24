@@ -10,6 +10,35 @@
     color: #1a1a1a;
     background: #fff;
   }
+
+  /* Top bar */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 4px;
+  }
+  .top-bar-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7177;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .gear-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7177;
+    padding: 2px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+  }
+  .gear-btn:hover { color: #1a1a1a; background: #f3f4f6; }
+  .gear-btn svg { width: 14px; height: 14px; }
+
+  /* Menu items */
   .header {
     padding: 10px 12px 6px;
     font-size: 11px;
@@ -36,34 +65,114 @@
   .menu-item:hover { background: #f3f4f6; }
   .menu-item svg { flex-shrink: 0; width: 16px; height: 16px; }
   .divider { height: 1px; background: #e5e7eb; margin: 4px 0; }
-  #toggle-item .status {
+  .menu-item .status {
     margin-left: auto;
     font-size: 11px;
     color: #6b7177;
   }
   #no-store { padding: 12px; color: #6b7177; text-align: center; }
+
+  /* Settings view */
+  #settings { display: none; }
+  .settings-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  .settings-item .item-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .reorder-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .reorder-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 0;
+    line-height: 1;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+  }
+  .reorder-btn:hover { color: #1a1a1a; background: #f3f4f6; }
+  .reorder-btn:disabled { opacity: 0.2; cursor: default; background: none; }
+  .reorder-btn svg { width: 10px; height: 10px; }
+
+  /* Toggle switch */
+  .toggle-switch {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-slider::before {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 2px;
+    bottom: 2px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: #008060; }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(14px); }
 </style>
 </head>
 <body>
+  <!-- Menu view -->
   <div id="content">
-    <div id="toggle-section">
-      <button class="menu-item" id="toggle-item">
-        <svg id="toggle-icon-visible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
+    <div class="top-bar">
+      <span class="top-bar-title">Shopify Tools</span>
+      <button class="gear-btn" id="open-settings" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
-        <svg id="toggle-icon-hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-          <line x1="1" y1="1" x2="23" y2="23"/>
-        </svg>
-        <span>Toggle Preview Bar</span>
-        <span class="status" id="bar-status"></span>
       </button>
     </div>
-    <div class="divider" id="links-divider"></div>
-    <div class="header">Quick Links</div>
-    <div id="links"></div>
+    <div id="menu-items"></div>
   </div>
+
+  <!-- Settings view -->
+  <div id="settings">
+    <div class="top-bar">
+      <span class="top-bar-title">Settings</span>
+      <button class="gear-btn" id="close-settings" title="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div id="settings-list"></div>
+  </div>
+
   <div id="no-store" style="display:none">Not a Shopify store</div>
   <script src="popup.js"></script>
 </body>
