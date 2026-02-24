@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Shopify Store Shortcuts",
+  "name": "ShopDev Helper",
   "version": "2.0",
   "description": "Toggle the Shopify preview bar and quickly jump to admin pages like Themes, Metaobjects, and more — with a customizable menu",
   "permissions": ["activeTab", "scripting", "storage"],
