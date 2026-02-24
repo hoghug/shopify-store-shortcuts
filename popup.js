@@ -21,7 +21,7 @@ const ITEMS = {
   themeEditor: {
     label: "Current Theme Editor",
     type: "link",
-    pathFn: (status) => `themes/${status?.themeId || ""}/editor`,
+    pathFn: (status, _pagePath) => `themes/${status?.themeId || ""}/editor`,
     needsThemeId: true,
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
   },
@@ -43,9 +43,22 @@ const ITEMS = {
     path: "products",
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
   },
+  copyThemeId: {
+    label: "Copy Theme ID",
+    type: "action",
+    needsThemeId: true,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
+  },
+  editCurrentPage: {
+    label: "Edit This Page",
+    type: "link",
+    needsThemeId: true,
+    pathFn: (status, pagePath) => `themes/${status?.themeId || ""}/editor?previewPath=${encodeURIComponent(pagePath || "/")}`,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  },
 };
 
-const DEFAULT_ORDER = ["toggle", "admin", "themes", "themeEditor", "content", "metaobjects", "products"];
+const DEFAULT_ORDER = ["toggle", "copyThemeId", "editCurrentPage", "admin", "themes", "themeEditor", "content", "metaobjects", "products"];
 
 const ARROW_UP = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`;
 const ARROW_DN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
@@ -76,9 +89,20 @@ function buildAdminUrl(domain, path) {
   return `https://${domain}/admin/${path}`;
 }
 
-function renderMenu(config, domain, status) {
+function renderMenu(config, domain, status, pagePath) {
   const container = document.getElementById("menu-items");
   container.innerHTML = "";
+
+  // Theme info header
+  if (status?.themeName) {
+    const info = document.createElement("div");
+    info.className = "theme-info";
+    let text = status.themeName;
+    if (status.themeRole) text += ` (${status.themeRole})`;
+    if (status.themeId) text += ` #${status.themeId}`;
+    info.textContent = text;
+    container.appendChild(info);
+  }
 
   let addedDivider = false;
 
@@ -90,6 +114,11 @@ function renderMenu(config, domain, status) {
 
     if (item.type === "action" && entry.id === "toggle") {
       container.appendChild(renderToggleItem(status));
+      continue;
+    }
+
+    if (item.type === "action" && entry.id === "copyThemeId") {
+      container.appendChild(renderCopyThemeIdItem(status));
       continue;
     }
 
@@ -106,7 +135,7 @@ function renderMenu(config, domain, status) {
     }
 
     if (item.type === "link") {
-      const path = item.pathFn ? item.pathFn(status) : item.path;
+      const path = item.pathFn ? item.pathFn(status, pagePath) : item.path;
       const url = buildAdminUrl(domain, path);
       const a = document.createElement("a");
       a.className = "menu-item";
@@ -150,6 +179,24 @@ function renderToggleItem(status) {
       } catch {}
     });
   }
+
+  return btn;
+}
+
+function renderCopyThemeIdItem(status) {
+  const btn = document.createElement("button");
+  btn.className = "menu-item";
+  const item = ITEMS.copyThemeId;
+
+  btn.innerHTML = `${item.icon}<span>${item.label}</span><span class="status">#${status.themeId}</span>`;
+
+  btn.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(String(status.themeId));
+    btn.querySelector("span:last-child").textContent = "Copied!";
+    setTimeout(() => {
+      btn.querySelector("span:last-child").textContent = `#${status.themeId}`;
+    }, 1000);
+  });
 
   return btn;
 }
@@ -244,9 +291,10 @@ async function init() {
   }
 
   const config = await loadConfig();
+  const pagePath = url.pathname;
 
   // Render menu
-  renderMenu(config, domain, status);
+  renderMenu(config, domain, status, pagePath);
 
   // Settings toggle
   const contentEl = document.getElementById("content");
@@ -261,7 +309,7 @@ async function init() {
   document.getElementById("close-settings").addEventListener("click", () => {
     settingsEl.style.display = "none";
     contentEl.style.display = "block";
-    renderMenu(config, domain, status);
+    renderMenu(config, domain, status, pagePath);
   });
 }
 
