@@ -1,8 +1,6 @@
-# Shopify Preview Bar Toggle
+# Shopify Store Shortcuts
 
-A Chrome extension that hides/shows the Shopify theme preview bar with a single click. The extension icon shows an open eye when the bar is visible and a closed eye when hidden.
-
-Hovering over the icon shows the theme name and role (e.g. "Dawn (unpublished)").
+A Chrome extension that adds a handy toolbar menu to any Shopify storefront. Toggle the theme preview bar, jump straight to admin pages (Themes, Content, Metaobjects, Products, and more), open the theme editor for the page you're viewing, and copy the current theme ID — all from a single popup. Every shortcut can be shown, hidden, or reordered in the built-in settings panel.
 
 ## Install
 
@@ -17,8 +15,11 @@ Hovering over the icon shows the theme name and role (e.g. "Dawn (unpublished)")
 
 ## Usage
 
-1. Navigate to any Shopify storefront previewing a theme
-2. Click the extension icon to hide the preview bar
-3. Click again to show it
-
-The icon switches between an open eye (bar visible) and closed eye (bar hidden).
+1. Navigate to any Shopify storefront
+2. Click the extension icon to open the shortcuts menu
+3. From the popup you can:
+   - **Toggle Preview Bar** — hide or show the theme preview bar
+   - **Copy Theme ID** — copy the previewed theme's ID to your clipboard
+   - **Edit This Page** — open the current page in the theme editor
+   - **Quick Links** — jump to Admin, Themes, Theme Editor, Content, Metaobjects, or Products
+4. Click the gear icon to customize which shortcuts appear and their order
