@@ -11,7 +11,7 @@ A Chrome extension that adds a handy toolbar menu to any Shopify storefront. Tog
 5. Select the root folder of this project (the one containing `manifest.json`)
 6. The extension icon (eye) will appear in your toolbar
 
-> If the icon isn't visible, click the puzzle piece icon in the Chrome toolbar and pin **Shopify Preview Bar Toggle**.
+> If the icon isn't visible, click the puzzle piece icon in the Chrome toolbar and pin **Shopify Store Shortcuts**.
 
 ## Usage
 
